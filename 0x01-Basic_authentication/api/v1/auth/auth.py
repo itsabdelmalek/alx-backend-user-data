@@ -6,6 +6,7 @@ Authentication module for the API
 from tabnanny import check
 from flask import request
 from typing import List, TypeVar
+from fnmatch import fnmatch
 User = TypeVar('User')
 
 
@@ -20,14 +21,11 @@ class Auth:
         Returns:
             True if authentication is required, False otherwise.
         """
-        check = path
-        if path is None or excluded_paths is None or len(excluded_paths) == 0:
+        if not path or not excluded_paths:
             return True
-        if path[-1] != "/":
-            check += "/"
-        if check in excluded_paths or path in excluded_paths:
-            return False
-        return True
+        if path[-1] != '/':
+            path += '/'
+        return not [n for n in excluded_paths if fnmatch(path, n)]
 
     def authorization_header(self, request=None) -> str:
         """
