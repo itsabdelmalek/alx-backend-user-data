@@ -2,18 +2,19 @@
 """
 Module for UserSession model
 """
-from models.base import Base, BaseModel
-from sqlalchemy import Column, String, ForeignKey
-from sqlalchemy.orm import relationship
+from models.base import Base
+from datetime import datetime
 
 
-class UserSession(BaseModel, Base):
+class UserSession(Base):
     """
-    UserSession class
+    User Session class
     """
-    __tablename__ = 'user_sessions'
 
-    user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
-    session_id = Column(String(60), nullable=False)
-
-    user = relationship("User", back_populates="sessions")
+    def __init__(self, *args: list, **kwargs: dict):
+        """
+        Initialize a UserSession instance.
+        """
+        super().__init__(*args, **kwargs)
+        self.user_id = kwargs.get('user_id', "")
+        self.session_id = kwargs.get('session_id', "")
